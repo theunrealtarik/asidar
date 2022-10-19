@@ -1,15 +1,15 @@
-# reactron
-![enter image description here](https://i.ibb.co/vmZ8w1f/banner.png)
-
-reactron is a simple and minimal boilerplate that allows the creation of cross-platform desktop applications using the [react.js](https://reactjs.org/) and [electron](https://www.electronjs.org/).
-
 ## Installation
+*for devs*
 ```
 git clone https://github.com/Txreq/reactron my-app
 cd my-app
 npm install
 ```
 ## Commands
+
+###  `npm run webpack:compile`
+Runs webpack which create one bundle file
+
 ###  `npm run electron:serve`
 Runs the app in the development mode.
 A chromium window will pop-up which will allow you to see the changes you make in `./src` folder, with the web-developer-tools detached from the main window, allows you see any lint errors in the console.
