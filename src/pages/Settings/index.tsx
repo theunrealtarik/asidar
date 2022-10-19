@@ -8,7 +8,8 @@ import {
   Text,
 } from "@mantine/core";
 import { useEffect, useReducer, useState } from "react";
-import Panel from "../components/Panel";
+import Panel from "components/Panel";
+import Restore from "./ResotrationModal";
 
 const os = window.require("os");
 const { ipcRenderer } = window.require("electron");
@@ -16,7 +17,6 @@ const { ipcRenderer } = window.require("electron");
 export default function SettingsTab() {
   const [user, setUser] = useState(os.userInfo());
   const [state, dispatch] = useReducer(reducer, {});
-  const [opened, setOpened] = useState(false);
 
   useEffect(() => {
     ipcRenderer.invoke("user-prefs").then((data: any) => {
@@ -24,7 +24,6 @@ export default function SettingsTab() {
     });
 
     return () => {
-      console.log(1);
       dispatch({ type: -1 });
     };
   }, []);
@@ -40,47 +39,15 @@ export default function SettingsTab() {
 
   function saveHandler() {
     ipcRenderer.invoke("save", state.user).then(() => {
-      alert("All of your settings have been saved succefuly !");
       dispatch({
         type: ACTIONS.SAVE,
       });
+      alert("All of your settings have been saved succefuly !");
     });
-  }
-
-  function RestorationModal() {
-    return (
-      <Modal
-        centered={true}
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title={<Text>Settings restoration</Text>}
-      >
-        <Stack>
-          <Text>
-            Are you sure you want to restore your preferences to the app's
-            default?
-          </Text>
-          <Group position="right">
-            <Button color="gray" onClick={() => setOpened(false)}>
-              No
-            </Button>
-            <Button
-              onClick={() => {
-                dispatch({ type: ACTIONS.RESTORE });
-                setOpened(false);
-              }}
-            >
-              Yes
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
-    );
   }
 
   return (
     <>
-      <RestorationModal />
       <Panel
         value="settings"
         title={
@@ -108,14 +75,11 @@ export default function SettingsTab() {
             align="center"
             style={{ flexDirection: "row" }}
           >
-            <Button
-              color="gray"
-              onClick={() => {
-                setOpened(true);
+            <Restore
+              dispatch={() => {
+                dispatch({ type: ACTIONS.RESTORE });
               }}
-            >
-              Restore
-            </Button>
+            />
             <Button disabled={!state.edited} onClick={saveHandler}>
               Save
             </Button>
@@ -155,7 +119,6 @@ function reducer(
       };
 
     default:
-      console.log(state);
       return state;
   }
 }
