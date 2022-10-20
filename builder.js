@@ -5,16 +5,19 @@ console.time("⌚ - finished");
 
 // include only important node_modules that the app requires
 // in order to run properly
-const requiredModules = ["bytenode"];
-const node_modules = fs.readdirSync("node_modules");
-const appFiles = node_modules.map((moduleName) => {
-  if (!requiredModules.includes(moduleName)) {
-    return "!" + "node_modules/" + moduleName + "/**/*";
-  } else return "node_modules/" + moduleName;
-});
+const packages = require("./package.json");
+const modules = fs.readdirSync("./node_modules");
+
+const us = Object.keys(packages.dependencies);
+
+const appFiles = [
+  ...modules.map((module) => {
+    if (us.includes(module)) return "node_module/" + module;
+    else return "!node_module/" + module + "/**/*";
+  }),
+];
 
 appFiles.push(...["main.js", "build/**/*", "public/**/*", "lib/**/*"]);
-
 build({
   targets: Platform.WINDOWS.createTarget(),
   config: {
@@ -24,10 +27,10 @@ build({
     extends: null,
     icon: "./assets/asidar.ico",
     target: "NSIS",
-    asar: false,
+    asar: true,
     files: appFiles,
     nsis: {
-      installerIcon: "./assets/asidar.ico"
+      installerIcon: "./assets/asidar.ico",
     },
   },
 }).then((result) => console.timeEnd("⌚ - finished"));

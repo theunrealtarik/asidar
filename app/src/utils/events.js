@@ -37,7 +37,6 @@ module.exports = function events(window) {
   let cachedTracks = [];
 
   ipcMain.handle("download", async (event, url) => {
-    window.webContents.send("test", true);
 
     const _p = getUserPreferences();
     if (!url) return;
