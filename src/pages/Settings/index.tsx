@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useReducer, useState } from "react";
 import Panel from "components/Panel";
-import Restore from "./ResotrationModal";
+import Restore from "./Resotration";
 
 const os = window.require("os");
 const { ipcRenderer } = window.require("electron");

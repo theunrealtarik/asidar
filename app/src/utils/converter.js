@@ -1,7 +1,5 @@
 const ffmpeg = require("ffmpeg-static");
 const ffmetadata = require("ffmetadata");
-const ytdl = require("ytdl-core");
-const mt = require("ytdl-getinfo");
 const cp = require("child_process");
 const path = require("path");
 const fs = require("fs");
@@ -18,7 +16,7 @@ const DEFAULT_DL_PATH = path.resolve(USER_HOMEDIR, "Music", "Asidar");
 
 module.exports = async function convert(
   url,
-  options = { fileanme, fileprefix, path, audioQuality }
+  options = { filename, fileprefix, path, audioQuality }
 ) {
   if (typeof url != "string") return;
   if (typeof options.audioQuality == "undefined") options.audioQuality == 128;
@@ -28,13 +26,6 @@ module.exports = async function convert(
     }
 
     options.path = DEFAULT_DL_PATH;
-  }
-
-  const metadata = (await mt.getInfo(url, [], false)).items[0];
-  const stream = ytdl(url, { filter: "audioonly" });
-
-  if (typeof options.filename == "undefined") {
-    options.filename = metadata.title;
   }
 
   const pathname = path.resolve(

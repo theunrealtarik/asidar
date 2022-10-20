@@ -7,6 +7,7 @@ const {
 } = require("./settings.js");
 
 const convert = require("./converter");
+const mt = require("ytdl-getinfo");
 
 module.exports = function events(window) {
   console.log("- events have loaded");
@@ -37,9 +38,15 @@ module.exports = function events(window) {
     const _p = getUserPreferences();
     if (!url) return;
 
-    convert(url, {
-      fileprefix: _p.filePrefix,
-      path: _p.defaultDownloadsPath,
-    });
+    
+    const metadata = (await mt.getInfo(url)).items[0]
+
+    // convert(url, {
+    //   filename: metadata.title,
+    //   fileprefix: _p.filePrefix,
+    //   path: _p.defaultDownloadsPath,
+    // });
+
+    return metadata
   });
 };
