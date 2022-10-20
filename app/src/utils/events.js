@@ -6,6 +6,8 @@ const {
   getUserPreferences,
 } = require("./settings.js");
 
+const convert = require("./converter");
+
 module.exports = function events(window) {
   console.log("- events have loaded");
 
@@ -31,4 +33,13 @@ module.exports = function events(window) {
   });
 
   // conversion
+  ipcMain.handle("download", async (event, url) => {
+    const _p = getUserPreferences();
+    if (!url) return;
+
+    convert(url, {
+      fileprefix: _p.filePrefix,
+      path: _p.defaultDownloadsPath,
+    });
+  });
 };

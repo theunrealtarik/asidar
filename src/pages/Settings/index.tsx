@@ -2,7 +2,8 @@ import {
   Button,
   FileInput,
   Group,
-  Modal,
+  Input,
+  Select,
   Space,
   Stack,
   Text,
@@ -28,23 +29,37 @@ export default function SettingsTab() {
     };
   }, []);
 
-  function dirPickHandler(selectedFolder: any) {
-    if (!selectedFolder?.canceled) {
+  const handlers = {
+    DirPickHandler: (selectedFolder: any) => {
+      if (!selectedFolder?.canceled) {
+        dispatch({
+          type: ACTIONS.UPDATE.DIR,
+          payload: selectedFolder,
+        });
+      }
+    },
+    InputChangeHandler: (event: any) => {
+      let key = event.target.name;
+      let value = event.target.value;
+      
       dispatch({
-        type: ACTIONS.UPDATE.DIR,
-        payload: selectedFolder,
+        type: ACTIONS.UPDATE.INPUT,
+        payload: {
+          key: key,
+          value: value,
+        },
       });
-    }
-  }
-
-  function saveHandler() {
-    ipcRenderer.invoke("save", state.user).then(() => {
-      dispatch({
-        type: ACTIONS.SAVE,
+    },
+    SaveHandler: () => {
+      ipcRenderer.invoke("save", state.user).then(() => {
+        dispatch({
+          type: ACTIONS.SAVE,
+        });
+        alert("All of your settings have been saved succefuly !");
+        location.reload()
       });
-      alert("All of your settings have been saved succefuly !");
-    });
-  }
+    },
+  };
 
   return (
     <>
@@ -58,16 +73,47 @@ export default function SettingsTab() {
         <Space h="xl" />
         <Stack
           justify="space-between"
-          sx={(theme) => ({ height: "calc(100vh - 95px)" })}
+          sx={() => ({ height: "calc(100vh - 95px)" })}
         >
           <Stack className="inputs">
-            <FileInput
-              placeholder={state?.user?.defaultDownloadsPath}
-              label="default downloads location"
-              onClick={() => {
-                ipcRenderer.invoke("select-dir").then(dirPickHandler);
-              }}
-            />
+            <Input.Wrapper label="file name prefix">
+              <Input
+                placeholder={`i.g: ${new Date().getFullYear()}-Weekend Whip.mp3`}
+                value={state?.user?.filePrefix}
+                onChange={handlers.InputChangeHandler}
+                name="filePrefix"
+              />
+            </Input.Wrapper>
+            <Group grow>
+              <FileInput
+                placeholder={state?.user?.defaultDownloadsPath}
+                label="default downloads location"
+                onClick={() => {
+                  ipcRenderer
+                    .invoke("select-dir")
+                    .then(handlers.DirPickHandler);
+                }}
+              />
+
+              <Select
+                label="audio quality"
+                placeholder={state?.user?.audioQuality + " Kbps"}
+                name="audio"
+                defaultValue={state?.user?.audioQuality}
+                onChange={(q) => {
+                  dispatch({
+                    type: ACTIONS.UPDATE.AUDIO,
+                    payload: q,
+                  });
+                }}
+                data={[
+                  { value: "96", label: "96 Kpbs" },
+                  { value: "128", label: "128 Kpbs" },
+                  { value: "256", label: "256 Kpbs" },
+                  { value: "320", label: "320 Kpbs" },
+                ]}
+              />
+            </Group>
           </Stack>
 
           <Stack
@@ -80,7 +126,7 @@ export default function SettingsTab() {
                 dispatch({ type: ACTIONS.RESTORE });
               }}
             />
-            <Button disabled={!state.edited} onClick={saveHandler}>
+            <Button disabled={!state.edited} onClick={handlers.SaveHandler}>
               Save
             </Button>
           </Stack>
@@ -118,6 +164,26 @@ function reducer(
         },
       };
 
+    case ACTIONS.UPDATE.INPUT:
+      return {
+        ...state,
+        edited: true,
+        user: {
+          ...state.user,
+          [action.payload?.key]: action.payload?.value,
+        },
+      };
+
+    case ACTIONS.UPDATE.AUDIO:
+      return {
+        ...state,
+        edited: true,
+        user: {
+          ...state.user,
+          audioQuality: action.payload,
+        },
+      };
+
     default:
       return state;
   }
@@ -129,5 +195,7 @@ const ACTIONS = {
   RESTORE: "restore",
   UPDATE: {
     DIR: "dir",
+    INPUT: "input",
+    AUDIO: "select",
   },
 };

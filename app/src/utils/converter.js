@@ -16,24 +16,31 @@ if (typeof USER_HOMEDIR == "undefined") {
 
 const DEFAULT_DL_PATH = path.resolve(USER_HOMEDIR, "Music", "Asidar");
 
-module.exports = async function convert(url, _filename, _path) {
+module.exports = async function convert(
+  url,
+  options = { fileanme, fileprefix, path, audioQuality }
+) {
   if (typeof url != "string") return;
-  if (typeof _path != "string") {
+  if (typeof options.audioQuality == "undefined") options.audioQuality == 128;
+  if (typeof options.path != "string") {
     if (!fs.existsSync(DEFAULT_DL_PATH)) {
       fs.mkdirSync(DEFAULT_DL_PATH, { recursive: true });
     }
 
-    _path = DEFAULT_DL_PATH;
+    options.path = DEFAULT_DL_PATH;
   }
 
   const metadata = (await mt.getInfo(url, [], false)).items[0];
   const stream = ytdl(url, { filter: "audioonly" });
 
-  if (typeof _filename == "undefined") {
-    _filename = metadata.title;
+  if (typeof options.filename == "undefined") {
+    options.filename = metadata.title;
   }
 
-  const pathname = path.resolve(_path, _filename + ".mp3");
+  const pathname = path.resolve(
+    options.path,
+    options.fileprefix + options.filename + ".mp3"
+  );
   const data = cp.spawn(
     String(ffmpeg),
     [
@@ -45,7 +52,7 @@ module.exports = async function convert(url, _filename, _path) {
       "-i",
       "pipe:4",
       "-b:a",
-      "128k",
+      `${options.audioQuality}k`,
       pathname,
     ],
     {

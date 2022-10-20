@@ -7,6 +7,8 @@ const userSettings = "user-settings";
 const defaultSchema = {
   defaultDownloadsPath: DEFAULT_DL_PATH,
   lastTimeUpdated: new Date(),
+  audioQuality: "128",
+  filePrefix: ""
 };
 
 function getUserPreferences() {
