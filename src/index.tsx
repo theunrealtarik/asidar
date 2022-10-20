@@ -21,3 +21,8 @@ root.render(
     </MantineProvider>
   </React.StrictMode>
 );
+
+export interface Video {
+  title: string,
+  thumbnail: string
+}

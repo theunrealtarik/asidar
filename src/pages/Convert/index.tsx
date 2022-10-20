@@ -1,75 +1,64 @@
-import { useReducer, useState } from "react";
+import { useContext, useState } from "react";
+import { Button, Group, Input, LoadingOverlay, Stack } from "@mantine/core";
+import { IconDownload } from "@tabler/icons";
+import { Video } from "index";
 
-import { ActionIcon, Input, Stack } from "@mantine/core";
 import Panel from "components/Panel";
-
-import { IconArrowRight, IconDownload } from "@tabler/icons";
-import VideoCard from "./VideoCard";
-import Loading from "./Loading";
+import DownloadContext from "contexts/DownloadsContext";
 
 const { ipcRenderer } = window.require("electron");
 
-export default function DownloadTab() {
-  const [found, setFound] = useState<boolean>(false);
-  const [valid, setValid] = useState<boolean>(true);
-
-  const [video, dispatch] = useReducer(reducer, {});
+export default function ConvertTab() {
   const [query, setQueryString] = useState<string>("");
+  const [pending, setPending] = useState<boolean>(false);
+  const { videos, setVideos } = useContext(DownloadContext);
 
   function RequestConversion() {
-    dispatch({ type: "START_FETCHING" });
+    setQueryString("");
+    setPending(true)
     ipcRenderer
       .invoke("download", query)
-      .then((res: any) => {
-        dispatch({ type: "ON_FETCHED", payload: res });
-        setFound(true)
+      .then((metadata: any) => {
+        if (typeof metadata == "undefined") return;
+
+        setVideos((prevVideoList: Video[]) => {
+          return [
+            ...prevVideoList,
+            { title: metadata?.title, thumbnail: metadata?.thumbnail },
+          ];
+        });
+        setPending(false)
       })
       .catch((err: Error) => {
-        dispatch({ type: "ERROR" });
+        alert("Something bad happened ...");
+        setPending(false)
       });
   }
 
-  console.log(video);
   return (
     <Panel value="youtube">
-      {video.loading ? (
-        <Loading />
-      ) : (
-        <Stack spacing={"md"} sx={() => ({ height: "calc(100vh - 20px)" })}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "10px",
+      <LoadingOverlay visible={pending} overlayBlur={1} />
+      <Stack spacing={"md"} sx={() => ({ height: "calc(100vh - 20px)" })}>
+        <Input.Wrapper sx={() => ({ width: "100%" })}>
+          <Input
+            placeholder="some youtube link"
+            value={query}
+            onChange={(e: any) => {
+              let value = e.target.value;
+              setQueryString(value);
             }}
-          >
-            <Input.Wrapper sx={() => ({ width: "100%" })}>
-              <Input
-                invalid={!valid}
-                placeholder="some youtube link"
-                onChange={(e: any) => {
-                  let value = e.target.value;
-                  setQueryString(value);
-                  setValid(isUrlValid(value));
-                }}
-              />
-            </Input.Wrapper>
-            <ActionIcon
-              onClick={RequestConversion}
-              size={"lg"}
-              variant="filled"
-              disabled={query.length == 0 || !isUrlValid(query)}
-            >
-              <IconArrowRight size={"20"} />
-            </ActionIcon>
-          </div>
-          <VideoCard
-            hide={!found}
-            videoThumbnail={video?.metadata?.thumbnail}
-            videoTitle={video?.metadata?.title}
           />
-        </Stack>
-      )}
+        </Input.Wrapper>
+        <Group position="right">
+          <Button
+            leftIcon={<IconDownload size={20} />}
+            onClick={RequestConversion}
+            disabled={!isUrlValid(query)}
+          >
+            Download
+          </Button>
+        </Group>
+      </Stack>
     </Panel>
   );
 }
