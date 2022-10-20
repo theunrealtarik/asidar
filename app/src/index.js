@@ -30,7 +30,9 @@ function main() {
     icon: path.join(__dirname, "../assets", "asidar.ico"),
   });
 
-  events(mainWindow);
+  mainWindow.webContents.on("did-finish-load", () => {
+    events(mainWindow);
+  });
 
   mainWindow.on("closed", () => mainWindow == null);
   if (typeof process.env.MODE != "undefined") {

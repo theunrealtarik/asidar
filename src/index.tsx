@@ -24,5 +24,6 @@ root.render(
 
 export interface Video {
   title: string,
-  thumbnail: string
+  thumbnail: string,
+  id: string | number
 }

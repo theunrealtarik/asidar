@@ -22,7 +22,6 @@ function App() {
   const [videos, setVideos] = useState<Video[]>([]);
   const { classes } = useStyles();
 
-  console.log(videos);
   return (
     <main className="app">
       <Tabs variant="pills" orientation="vertical" defaultValue="youtube">

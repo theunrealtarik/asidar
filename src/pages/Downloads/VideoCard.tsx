@@ -1,10 +1,37 @@
-import { Avatar, Box, Group, Header, Image, Stack, Text } from "@mantine/core";
-import { IconEye } from "@tabler/icons";
+import {
+  Box,
+  Group,
+  Image,
+  Loader,
+  Progress,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
 import { Video } from "index";
-import React from "react";
+import { IconCheck } from "@tabler/icons";
+import { useInterval } from "@mantine/hooks";
 
-export default function VideoCard({ title, thumbnail }: Video) {
-  const [w, h] = [180, 100]
+const { ipcRenderer } = window.require("electron");
+
+export default function VideoCard({ title, thumbnail, id }: Video) {
+  const [isDownloading, update] = useState<boolean>(true);
+  const [w, h] = [180, 100];
+
+  const interval = useInterval(() => {
+    ipcRenderer.invoke("progress", id).then((status: boolean) => update(!status));
+  }, 200);
+
+  useEffect(() => {
+    interval.start();
+
+    if (!isDownloading) {
+      interval.stop();
+    }
+
+    return () => interval.stop();
+  });
+
   return (
     <div
       style={{
@@ -27,6 +54,11 @@ export default function VideoCard({ title, thumbnail }: Video) {
         <Text size={"md"} weight={600} lineClamp={2}>
           {title}
         </Text>
+        {isDownloading ? (
+          <Loader size={"xs"} />
+        ) : (
+          <IconCheck size={20} color="green" />
+        )}
       </Stack>
     </div>
   );

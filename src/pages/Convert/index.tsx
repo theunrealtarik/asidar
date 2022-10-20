@@ -15,23 +15,34 @@ export default function ConvertTab() {
 
   function RequestConversion() {
     setQueryString("");
-    setPending(true)
+    setPending(true);
     ipcRenderer
       .invoke("download", query)
       .then((metadata: any) => {
         if (typeof metadata == "undefined") return;
-
         setVideos((prevVideoList: Video[]) => {
-          return [
-            ...prevVideoList,
-            { title: metadata?.title, thumbnail: metadata?.thumbnail },
-          ];
+          let cached = prevVideoList.find(
+            (video) => video.id == metadata?.display_id
+          );
+
+          if (!cached) {
+            return [
+              ...prevVideoList,
+              {
+                title: metadata?.title,
+                thumbnail: metadata?.thumbnail,
+                id: metadata?.display_id,
+              },
+            ];
+          }
+
+          return prevVideoList;
         });
-        setPending(false)
+        setPending(false);
       })
       .catch((err: Error) => {
         alert("Something bad happened ...");
-        setPending(false)
+        setPending(false);
       });
   }
 

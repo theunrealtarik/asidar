@@ -16,7 +16,7 @@ async function convert(
   options = { filename, fileprefix, path, audioQuality }
 ) {
   if (typeof url != "string") return;
-  if (typeof options.audioQuality == "undefined") options.audioQuality == 128;
+  if (typeof options.audioQuality == "undefined") options.audioQuality = 128;
   if (typeof options.path != "string") {
     if (!fs.existsSync(DEFAULT_DL_PATH)) {
       fs.mkdirSync(DEFAULT_DL_PATH, { recursive: true });
@@ -31,16 +31,17 @@ async function convert(
     options.path,
     options.fileprefix + options.filename + ".mp3"
   );
-
   // Start encoding
   const proc = ffmpeg(stream)
     .audioBitrate(options.audioQuality)
     .withAudioCodec("libmp3lame")
     .toFormat("mp3")
     .on("error", function (err) {
-      return callback(err.message, null);
+      console.log(err.message);
     })
     .saveToFile(pathname);
+
+  return proc
 }
 
 module.exports = { convert, DEFAULT_DL_PATH, USER_HOMEDIR };

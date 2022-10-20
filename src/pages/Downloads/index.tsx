@@ -8,10 +8,10 @@ import Panel from "components/Panel";
 import DownloadsContext from "contexts/DownloadsContext";
 import VideoCard from "./VideoCard";
 
+const { ipcRenderer } = window.require("electron");
+
 export default function DownloadTab() {
   const { videos, setVideos } = useContext(DownloadsContext);
-
-  console.log("downloads", videos);
 
   return (
     <Panel value="download">
@@ -42,6 +42,7 @@ export default function DownloadTab() {
             color="red"
             onClick={() => {
               setVideos(() => []);
+              ipcRenderer.invoke("clear");
             }}
           >
             <IconTrash size={20} />
