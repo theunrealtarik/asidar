@@ -1,3 +1,7 @@
+<a href="https://github.com/Txreq/asidar/releases">
+  <img src="https://i.ibb.co/W6wgdnt/Frame-6.png" />
+</a>
+
 ## Installation
 *for devs*
 ```
