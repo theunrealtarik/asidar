@@ -41,7 +41,7 @@ export default function SettingsTab() {
     InputChangeHandler: (event: any) => {
       let key = event.target.name;
       let value = event.target.value;
-      
+
       dispatch({
         type: ACTIONS.UPDATE.INPUT,
         payload: {
@@ -56,7 +56,6 @@ export default function SettingsTab() {
           type: ACTIONS.SAVE,
         });
         alert("All of your settings have been saved succefuly !");
-        location.reload()
       });
     },
   };
@@ -78,8 +77,10 @@ export default function SettingsTab() {
           <Stack className="inputs">
             <Input.Wrapper label="file name prefix">
               <Input
-                placeholder={`i.g: ${new Date().getFullYear()}-Weekend Whip.mp3`}
-                value={state?.user?.filePrefix}
+                placeholder={
+                  state?.user?.filePrefix ||
+                  `i.g: ${new Date().getFullYear()}-Weekend Whip.mp3`
+                }
                 onChange={handlers.InputChangeHandler}
                 name="filePrefix"
               />

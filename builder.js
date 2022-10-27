@@ -21,13 +21,13 @@ appFiles.push(...["main.js", "build/**/*", "public/**/*", "lib/**/*"]);
 build({
   targets: Platform.WINDOWS.createTarget(),
   config: {
-    appId: "com.asidar.app",
-    buildVersion: "1.0.0",
-    productName: "asidar",
+    appId: "com." + packages.name + ".app",
+    productName: packages.name,
+    buildVersion: packages.version,
     extends: null,
     icon: "./assets/asidar.ico",
     target: "NSIS",
-    asar: true,
+    asar: false,
     files: appFiles,
     nsis: {
       installerIcon: "./assets/asidar.ico",

@@ -41,23 +41,29 @@ export default function ConvertTab() {
         setPending(false);
       })
       .catch((err: Error) => {
-        alert("Something bad happened ...");
+        alert(
+          String(err.message) +
+            "\nContact the developers to fix this error ASAP."
+        );
         setPending(false);
       });
   }
 
   return (
     <Panel value="youtube">
-      <LoadingOverlay visible={pending} overlayBlur={1} />
+      <LoadingOverlay
+        visible={pending}
+        overlayBlur={0.8}
+        overlayOpacity={0.1}
+        sx={() => ({ maxWidth: "100%" })}
+      />
       <Stack spacing={"md"} sx={() => ({ height: "calc(100vh - 20px)" })}>
         <Input.Wrapper sx={() => ({ width: "100%" })}>
           <Input
+            name="query"
             placeholder="some youtube link"
             value={query}
-            onChange={(e: any) => {
-              let value = e.target.value;
-              setQueryString(value);
-            }}
+            onChange={(e: any) => setQueryString(e.target.value)}
           />
         </Input.Wrapper>
         <Group position="right">
