@@ -1,8 +1,10 @@
 <a href="https://github.com/Txreq/asidar/releases">
-  <img src="https://i.ibb.co/W6wgdnt/Frame-6.png" />
+  <img src="https://i.ibb.co/G0Lc17T/Frame-6.png" />
 </a>
 
 ## Installation
+> This application is based on <a href="https://github.com/Txreq/reactron">reactron.js</a> template.
+
 *for devs*
 ```
 git clone https://github.com/Txreq/reactron my-app
@@ -37,3 +39,4 @@ Of course, you can use another packager such as [electron-forge](https://www.ele
 
 ## Code Protection
 the boilerplate uses [bytenode](https://github.com/bytenode/bytenode) in order to compile the `app/index.js` to v8-enginge's binaries and store it in the `public` folder as `app.jsc`, then package all the app resources in one asar file.
+
