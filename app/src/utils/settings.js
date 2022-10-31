@@ -1,38 +1,37 @@
 const Store = require("electron-store");
-const { DEFAULT_DL_PATH } = require("./converter");
+const path = require("path");
 
 const store = new Store();
-const userSettings = "user-settings";
 
-const defaultSchema = {
-  defaultDownloadsPath: DEFAULT_DL_PATH,
-  lastTimeUpdated: new Date(),
-  audioQuality: "128",
-  filePrefix: ""
-};
-
-function getUserPreferences() {
-  const storedPreferences = store.get(userSettings);
-
-  if (!storedPreferences) {
-    store.set(userSettings, defaultSchema);
+class Settings {
+  constructor() {
+    this.userSettingsKeyKey = "user-settings";
+    this.defaultSchema = {
+      defaultDownloadsPath: "C:\\",
+      lastTimeUpdated: new Date(),
+      audioQuality: "128",
+      filePrefix: "",
+    };
   }
 
-  return storedPreferences;
+  getUserPreferences() {
+    const storedPreferences = store.get(this.userSettingsKey);
+
+    if (!storedPreferences) {
+      store.set(this.userSettingsKey, this.defaultSchema);
+    }
+
+    return storedPreferences[this.userSettingsKeyKey];
+  }
+
+  saveSettings(changes) {
+    console.log(changes);
+    store.set(this.userSettingsKey, changes);
+  }
+
+  restoreDefault() {
+    store.set(this.userSettingsKey, this.defaultSchema);
+  }
 }
 
-function saveSettings(changes) {
-  console.log(changes);
-  store.set(userSettings, changes);
-}
-
-function restoreDefault() {
-  store.set(userSettings, defaultSchema);
-}
-
-module.exports = {
-  saveSettings,
-  restoreDefault,
-  getUserPreferences,
-  defaultSchema,
-};
+module.exports = Settings;

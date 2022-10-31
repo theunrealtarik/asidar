@@ -23,7 +23,7 @@ export default function SettingsTab() {
     ipcRenderer.invoke("user-prefs").then((data: any) => {
       dispatch({ type: ACTIONS.INITIALIZE, payload: data });
     });
-
+    console.log(state)
     return () => {
       dispatch({ type: -1 });
     };

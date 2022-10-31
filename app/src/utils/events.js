@@ -1,15 +1,11 @@
 const { ipcMain, dialog, BrowserWindow } = require("electron");
-const {
-  defaultSchema,
-  restoreDefault,
-  saveSettings,
-  getUserPreferences,
-} = require("./settings.js");
-
-const { convert } = require("./converter");
+const { audioConverter } = require("asidar-lib");
 const mt = require("ytdl-getinfo");
+const Settings = require("./settings.js");
 
-module.exports = function events(window) {
+const settings = new Settings();
+
+module.exports = function events(window = BrowserWindow) {
   console.log("- events have loaded");
 
   // settings
@@ -22,34 +18,35 @@ module.exports = function events(window) {
   });
 
   ipcMain.handle("user-prefs", (event) => {
+    console.log("called", settings.getUserPreferences());
     return {
-      user: getUserPreferences(),
-      defaultPrefs: defaultSchema,
+      user: settings.getUserPreferences(),
+      defaultPrefs: settings.defaultSchema,
     };
   });
 
-  ipcMain.handle("restore", () => restoreDefault);
+  ipcMain.handle("restore", () => settings.restoreDefault());
   ipcMain.handle("save", (event, userChanges) => {
-    saveSettings(userChanges);
+    settings.saveSettings(userChanges);
   });
 
   // conversion
   let cachedTracks = [];
 
   ipcMain.handle("download", async (event, url) => {
-
-    const _p = getUserPreferences();
+    const _p = settings.getUserPreferences();
     if (!url) return;
 
     const metadata = (await mt.getInfo(url)).items[0];
 
-    convert(url, {
-      filename: String(metadata.title).replace(
+    audioConverter(url, {
+      outFilename: String(metadata.title).replace(
         /:|\?|\\|\/|\:|\*|<|>|\"|\|/g,
         ""
       ),
-      fileprefix: _p.filePrefix,
-      path: _p.defaultDownloadsPath,
+      outPath: _p.defaultDownloadsPath,
+      filePrefix: _p.filePrefix,
+      audioQuality: _p.audioQuality,
     }).then((proc) => {
       proc.on("end", () => {
         cachedTracks.push(metadata.display_id);
