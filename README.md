@@ -11,6 +11,7 @@ git clone https://github.com/Txreq/reactron my-app
 cd my-app
 npm install
 ```
+If you want to make your own app using our library, check <a href="https://github.com/Txreq/asidar-lib">here</a>
 ## Commands
 
 ###  `npm run webpack:compile`
