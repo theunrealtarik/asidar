@@ -1,6 +1,7 @@
 <a href="https://github.com/Txreq/asidar/releases">
   <img src="https://i.ibb.co/G0Lc17T/Frame-6.png" />
 </a>
+Desktop application based on electronjs made for windows users, it allows to convert and download youtube video into your localmachine as an mp3 file
 
 ## Installation
 > This application is based on <a href="https://github.com/Txreq/reactron">reactron.js</a> template.
