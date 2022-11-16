@@ -18,7 +18,6 @@ module.exports = function events(window = BrowserWindow) {
   });
 
   ipcMain.handle("user-prefs", (event) => {
-    console.log("called", settings.getUserPreferences());
     return {
       user: settings.getUserPreferences(),
       defaultPrefs: settings.defaultSchema,

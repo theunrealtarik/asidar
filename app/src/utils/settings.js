@@ -2,31 +2,27 @@ const Store = require("electron-store");
 const path = require("path");
 
 const store = new Store();
-
+const USER_SETTINGS_KEY = "user-settings";
 class Settings {
   constructor() {
-    this.userSettingsKeyKey = "user-settings";
     this.defaultSchema = {
       defaultDownloadsPath: "C:\\",
-      lastTimeUpdated: new Date(),
       audioQuality: "128",
       filePrefix: "",
     };
   }
 
   getUserPreferences() {
-    const storedPreferences = store.get(this.userSettingsKey);
-
+    const storedPreferences = store.get(USER_SETTINGS_KEY);
     if (!storedPreferences) {
       store.set(this.userSettingsKey, this.defaultSchema);
     }
 
-    return storedPreferences[this.userSettingsKeyKey];
+    return storedPreferences;
   }
 
   saveSettings(changes) {
-    console.log(changes);
-    store.set(this.userSettingsKey, changes);
+    store.set(USER_SETTINGS_KEY, changes);
   }
 
   restoreDefault() {
