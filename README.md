@@ -2,7 +2,7 @@
 Asidar desktop application allows you to download youtube videos and convert them into mp3 format, so that you can listen to them on your desktop or laptop. The application is really easy to use, and it only takes a few clicks to download your favorite videos. Asidar is currently available for Windows computers only.
 
 <a href="https://github.com/Txreq/asidar/releases">
-  <img src="https://i.ibb.co/G0Lc17T/Frame-6.png" />
+  <img src="https://i.ibb.co/fq4dXm1/Frame-6.png" />
 </a>
 
 ## Installation
