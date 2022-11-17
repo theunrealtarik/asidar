@@ -5,6 +5,8 @@ Asidar desktop application allows you to download youtube videos and convert the
   <img src="https://i.ibb.co/fq4dXm1/Frame-6.png" />
 </a>
 
+> *NOTE*: you have to install ffmpeg into your machine first in order to get our app working, <a href="https://www.youtube.com/watch?v=IECI72XEox0">here</a> is a video tutorial if you have no idea of what I'm talking about.
+
 ## Installation
 > This application is based on <a href="https://github.com/Txreq/reactron">reactron.js</a> template.
 
