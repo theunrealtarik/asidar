@@ -2,6 +2,9 @@ const { app, BrowserWindow, dialog } = require("electron");
 const path = require("path");
 const url = require("url");
 const events = require("./utils/events");
+const cp = require("child_process");
+const utils = require("util");
+const { stderr } = require("process");
 
 console.log("- mode: ", process.env.MODE);
 
@@ -32,6 +35,8 @@ function main() {
 
   events(mainWindow);
 
+  // load app UI
+
   mainWindow.on("closed", () => mainWindow == null);
   if (typeof process.env.MODE != "undefined") {
     mainWindow.loadURL("http://localhost:3000/").then(() => {
@@ -40,8 +45,6 @@ function main() {
       });
     });
   } else {
-    console.log("- production build test");
-
     mainWindow.removeMenu();
     mainWindow.loadURL(
       url.format({

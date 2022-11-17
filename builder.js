@@ -30,6 +30,7 @@ build({
     asar: false,
     files: appFiles,
     nsis: {
+      runAfterFinish: false,
       installerIcon: "./assets/asidar.ico",
     },
   },

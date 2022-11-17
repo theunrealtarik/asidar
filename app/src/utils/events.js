@@ -19,7 +19,7 @@ module.exports = function events(window = BrowserWindow) {
 
   ipcMain.handle("user-prefs", (event) => {
     return {
-      user: settings.getUserPreferences(),
+      user: settings.storedPreferences,
       defaultPrefs: settings.defaultSchema,
     };
   });
@@ -33,7 +33,7 @@ module.exports = function events(window = BrowserWindow) {
   let cachedTracks = [];
 
   ipcMain.handle("download", async (event, url) => {
-    const _p = settings.getUserPreferences();
+    const _p = settings.storedPreferences;
     if (!url) return;
 
     const metadata = (await mt.getInfo(url)).items[0];
@@ -52,6 +52,7 @@ module.exports = function events(window = BrowserWindow) {
       });
     });
     return metadata;
+    console.log("test")
   });
 
   ipcMain.handle("progress", (event, id) => {

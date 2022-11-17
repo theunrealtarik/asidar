@@ -22,6 +22,8 @@ export default function SettingsTab() {
   useEffect(() => {
     ipcRenderer.invoke("user-prefs").then((data: any) => {
       dispatch({ type: ACTIONS.INITIALIZE, payload: data });
+    }).catch((err : Error) => {
+      alert(`failed to load user prefernces\nError:  ${err.message}`)
     });
 
     return () => {
