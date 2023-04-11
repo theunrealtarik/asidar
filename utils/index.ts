@@ -1,8 +1,6 @@
-import ffmpeg from "fluent-ffmpeg";
 import ytdl from "ytdl-core";
 import path from "path";
 import cp from "child_process";
-import fs from "fs";
 
 export const AUDIO_DEFAULT_OUTPUT_PATH = path.join(
   process.env.HOMEDRIVE,
@@ -15,7 +13,7 @@ export class Converter {
     url: string,
     info: ytdl.videoInfo,
     audioQuality: AudioQuality
-  ): Promise<ffmpeg.FfmpegCommand | undefined> => {
+  ) => {
     const NON_ALLOWED_CHARS = /\\|\/|:|\*|\?|\"|<|>|\|/g;
 
     const sanitizedOutFilename = removeNonAllowedChars(
@@ -30,13 +28,31 @@ export class Converter {
         `${audioQuality}_${sanitizedOutFilename}.mp3`
       );
 
-      const dlProcess = ffmpeg(stream)
-        .audioBitrate(audioQuality)
-        .withAudioCodec("libmp3lame")
-        .toFormat("mp3")
-        .saveToFile(pathname);
+      // const dlProcess = ffmpeg(stream)
+      //   .audioBitrate(audioQuality)
+      //   .withAudioCodec("libmp3lame")
+      //   .toFormat("mp3")
+      //   .saveToFile(pathname);
 
-      return dlProcess;
+      const ffmpegProcess = cp.spawn("ffmpeg", [
+        "-i",
+        "-",
+        "-b:a",
+        `${audioQuality}`,
+        "-c:a",
+        "libmp3lame",
+        "-f",
+        "mp3",
+        pathname,
+      ]);
+
+      ffmpegProcess.stdin.on("error", (err) => {
+        console.error("Error with stdin:", err);
+      });
+
+      stream.pipe(ffmpegProcess.stdin);
+
+      return ffmpegProcess;
     } catch (error) {
       return undefined;
     }

@@ -41,8 +41,14 @@ const createWindow = (): void => {
       try {
         const metadata = await ytdl.getInfo(url);
         Converter.convertAudio(url, metadata, audioQuality).then((track) => {
-          track.on("end", () => {
-            downloaded.add(`${audioQuality}_${metadata.videoDetails.videoId}`);
+          track.on("close", (code) => {
+            if (code === 0) {
+              downloaded.add(
+                `${audioQuality}_${metadata.videoDetails.videoId}`
+              );
+            } else {
+              console.error(`ffmpeg process exited with code ${code}`);
+            }
           });
         });
 

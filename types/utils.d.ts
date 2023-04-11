@@ -1,4 +1,4 @@
-type AudioQuality = 96 | 128 | 256 | 320;
+type AudioQuality = "96" | "128" | "256" | "320";
 
 type Chunk = {
   frames: NaN;
