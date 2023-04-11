@@ -1,50 +1,49 @@
-import { useState } from "react";
-import { Tabs } from "@mantine/core";
-import { IconBrandYoutube, IconDownload, IconSettings } from "@tabler/icons";
-import { createStyles } from "@mantine/core";
-import { Video } from "index";
+import React, { useEffect } from "react";
 
-import ConvertTab from "./pages/Convert";
-import DownloadTab from "pages/Downloads";
-import SettingsTab from "./pages/Settings";
+import { Button } from "@material-tailwind/react";
+import { Tab } from "@headlessui/react";
 
-import DownloadsContext from "contexts/DownloadsContext";
+import Views from "./views";
+import Labels from "./components/Labels";
 
-const useStyles = createStyles((theme) => ({
-  tabList: {
-    backgroundColor: theme.colors.dark[8],
-    padding: theme.spacing.xs,
-    height: "100vh",
-  },
-}));
-
-function App() {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const { classes } = useStyles();
-
+const App: React.FC = () => {
   return (
-    <main className="app">
-      <Tabs variant="pills" orientation="vertical" defaultValue="youtube">
-        <Tabs.List className={classes.tabList}>
-          <Tabs.Tab value="youtube" icon={<IconBrandYoutube size={14} />}>
-            Converter
-          </Tabs.Tab>
-          <Tabs.Tab value="download" icon={<IconDownload size={14} />}>
-            Downloads
-          </Tabs.Tab>
-          <Tabs.Tab value="settings" icon={<IconSettings size={14} />}>
-            Settings
-          </Tabs.Tab>
-        </Tabs.List>
-
-        <DownloadsContext.Provider value={{ videos, setVideos }}>
-          <ConvertTab />
-          <DownloadTab />
-        </DownloadsContext.Provider>
-        <SettingsTab />
-      </Tabs>
+    <main className="w-full h-screen">
+      <Tab.Group as="aside" className="w-full h-full">
+        <Tab.List className="fixed top-0 left-0 w-52 flex flex-col gap-y-2 p-2 h-full justify-between">
+          <div>
+            {Views.map((tab, index) => (
+              <Tab as={React.Fragment} key={index}>
+                {({ selected }) => (
+                  <Button
+                    variant={selected ? "filled" : "text"}
+                    className="inline-flex items-center space-x-2 w-full"
+                  >
+                    <span>
+                      <tab.icon />
+                    </span>
+                    <span>{tab.label}</span>
+                  </Button>
+                )}
+              </Tab>
+            ))}
+          </div>
+          <div>
+            <Labels.FFMPEG />
+          </div>
+        </Tab.List>
+        <Tab.Panels className="ml-52 h-full">
+          {Views.map((tab, index) => (
+            <Tab.Panel className="p-4 pl-2 w-full h-full" key={index}>
+              <React.Suspense fallback={"Loading ..."}>
+                <tab.component />
+              </React.Suspense>
+            </Tab.Panel>
+          ))}
+        </Tab.Panels>
+      </Tab.Group>
     </main>
   );
-}
+};
 
 export default App;
