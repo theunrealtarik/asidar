@@ -9,7 +9,9 @@ import { mainConfig } from "./configs/webpack.main.config";
 import { rendererConfig } from "./configs/webpack.renderer.config";
 
 const config: ForgeConfig = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: "./public/asidar.ico",
+  },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({}),

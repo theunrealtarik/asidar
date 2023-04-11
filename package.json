@@ -1,7 +1,7 @@
 {
   "name": "asidar",
   "productName": "Asidar",
-  "description": "Convert youtube videos to MP3 files easier than ever!",
+  "description": "Made converting YouTube videos to MP3 files easier than ever.",
   "version": "1.0.0",
   "main": ".webpack/main",
   "author": {
